@@ -117,20 +117,16 @@ class SFMEngine:
         self.unqiue_points3D_dict = optimized_points3D_dict
         
     def filter_points_iqr(self, points3D, k=2.0):
-        # 计算中心点
         centroid = np.mean(points3D, axis=0)
-        # 计算到中心点的距离
         distances = np.linalg.norm(points3D - centroid, axis=1)
         
-        # 计算IQR
         Q1 = np.percentile(distances, 25)
         Q3 = np.percentile(distances, 75)
         IQR = Q3 - Q1
-        
-        # 设定阈值
+
         threshold = Q3 + k * IQR
         
-        # 筛选点
+
         mask = distances < threshold
         filtered_points = points3D[mask]
         

@@ -4,7 +4,7 @@ import os
 
 import cv2 as cv
 
-from config import DATA_SFM_IMAGES_DIR_PATH, SFM_CV_IMREAD_FLAG, SFM_LOAD_SIZE
+from config import DATA_SFM_IMAGES_DIR_PATH, LOG_VERBOSE, SFM_CV_IMREAD_FLAG, SFM_LOAD_SIZE
 
 
 class SFMImgLoader:
@@ -26,13 +26,19 @@ class SFMImgLoader:
             return int(re.search(r'sfm(\d+)', s).group(1))
             
         sfm_img_paths = sorted(glob.glob(os.path.join(DATA_SFM_IMAGES_DIR_PATH, 'sfm*.jpg')), key=natural_sort_key)
+        print(f"Number of sfm images: {len(sfm_img_paths)}")
+        if len(sfm_img_paths) == 0:
+            raise Exception("No sfm images found in the sfm images directory.")
         for sfm_img_path in sfm_img_paths:
-            print(f'Loading {sfm_img_path}')
+            if LOG_VERBOSE:
+                print(f'Loading {sfm_img_path}')
             sfm_img = cv.imread(sfm_img_path, flags)
-            # h, w = sfm_img.shape[:2]
-            # if w > h: # if landscape
-            #     sfm_img = cv.rotate(sfm_img, cv.ROTATE_90_CLOCKWISE)
-            # sfm_img = cv.resize(sfm_img, load_size)
+            h, w = sfm_img.shape[:2]
+            if h > w: # if landscape
+                sfm_img = cv.rotate(sfm_img, cv.ROTATE_90_CLOCKWISE)
+            sfm_img = cv.resize(sfm_img, load_size)
+            # cv.imshow('sfm_img', sfm_img)
+            # cv.waitKey(0)
             self.sfm_imgs.append(sfm_img)
 
     def _load_undistort_imgs(self, K, dist, reference_size = SFM_LOAD_SIZE):

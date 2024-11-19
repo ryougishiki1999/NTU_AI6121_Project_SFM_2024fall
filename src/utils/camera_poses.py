@@ -9,7 +9,6 @@ def generate_camera_pose(rvec, tvec):
         tvec (_type_): (3,1)
     """
     camera_pose = np.concatenate([rvec.flatten(), tvec.flatten()]) # (6,) [rx, ry, rz, tx, ty, tz]
-    print("tmp camera pose: ", camera_pose)
     return camera_pose
 
 def recover_camera_pose(camera_pose):

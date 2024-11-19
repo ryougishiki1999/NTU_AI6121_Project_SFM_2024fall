@@ -29,7 +29,7 @@ def match_SIFT_features(descs1, descs2, kps1, kps2):
 
     # ratio test as per Lowe's paper
     for i, (m, n) in enumerate(matches):
-        if m.distance < 0.75 * n.distance:
+        if m.distance < 0.80 * n.distance:
             pts1.append(kps1[m.queryIdx].pt)
             pts2.append(kps2[m.trainIdx].pt)
             good_matches.append(m)
