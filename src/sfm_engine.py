@@ -71,8 +71,8 @@ class SFMEngine:
         matched_points3D = total_points3D[matched_mask]
         matched_train_pts = train_pts[matched_mask]
         
-        print("len of matched mask: ", np.count_nonzero(matched_mask))
-        print("len of incremental mask: ", np.count_nonzero(incremental_mask))
+        print(f"Number of correspondence between existed 3Dpoints and 2D feature points from img{train_idx}: ", np.count_nonzero(matched_mask))
+        print(f"Number of incremental 2D feature points from img{train_idx}: ", np.count_nonzero(incremental_mask))
         
 
         incremental_query_pts, incremental_train_pts = query_pts[incremental_mask], train_pts[incremental_mask]
@@ -87,7 +87,7 @@ class SFMEngine:
             print("query rvec, tvec: ", query_rvec, query_tvec)
         
         self.camera_poses[train_idx] = generate_camera_pose(train_rvec, train_tvec)
-        print(f"{train_idx} camera pose: ", cv.Rodrigues(train_rvec)[0], train_tvec)
+        print(f"camera pose of img {train_idx}: ", cv.Rodrigues(train_rvec)[0], train_tvec)
         
         
         P_query = generate_projection_matrix(query_rvec, query_tvec, self.K)
@@ -99,13 +99,13 @@ class SFMEngine:
         
         unique_mask = update_unique_points3D_dict(self.unqiue_points3D_dict, train_idx, new_Points3D, incremental_train_pts)
 
-        print("Number of new points3D: ", new_Points3D.shape[0])
-        print("Number of unique new points3D: ", new_Points3D[unique_mask].shape[0])
+        print("number of incremental points3D: ", new_Points3D.shape[0])
+        print("number of unique incremental points3D: ", new_Points3D[unique_mask].shape[0])
     
     def _incremental_reconstructions(self):
         while True:
             last_idx, nxt_idx = self._select_next_img()
-            print("Query img idx: ", last_idx, "Train img idx: ", nxt_idx)
+            print("\nQuery img idx: ", last_idx, "Train img idx: ", nxt_idx)
             if nxt_idx is None:
                 break # no more images to add into incremental reconstructions
             

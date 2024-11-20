@@ -11,8 +11,6 @@ def update_good_matches_dict(good_matches_dict, train_img_idx, train_pts, query_
         good_matches_dict (_type_): key:trainImg idx, value: dict{key: trainImg pt, value: queryImg pt}, 
         trainImg idx from 1 to N_SFM_IMGS-1
     """
-    
-    print("update good matches, train_img_idx: ", train_img_idx)
     if train_img_idx not in good_matches_dict:
         good_matches_dict[train_img_idx] = dict()
         
