@@ -10,7 +10,7 @@ DATA_CALIBRATION_DIR_PATH = os.path.join(DATA_DIR_PATH, 'calibration')
 DATA_CALIBRATION_RESULT_FILE_PATH = os.path.join(DATA_CALIBRATION_DIR_PATH, 'calibration_result.npz')
 
 DATA_SFM_DIRS_PATH = os.path.join(DATA_DIR_PATH, 'sfm')
-DATA_SFM_IMAGES_DIR_PATH = os.path.join(DATA_SFM_DIRS_PATH, 'yunnangarden_sculpture')
+DATA_SFM_IMAGES_DIR_PATH = os.path.join(DATA_SFM_DIRS_PATH, 'yunnangarden_obelisk')
 
 RESOURCE_DIR_PATH = os.path.join(ROOT_DIR_PATH, 'resource')
 OUT_DIR_PATH = os.path.join(ROOT_DIR_PATH, 'out')

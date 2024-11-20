@@ -70,14 +70,16 @@ class SFMEngine:
             
         matched_points3D = total_points3D[matched_mask]
         matched_train_pts = train_pts[matched_mask]
-        if LOG_VERBOSE:
-            print("len of incremental mask: ", np.count_nonzero(incremental_mask))
-            print("len of matched mask: ", np.count_nonzero(matched_mask))
-            
+        
+        print("len of matched mask: ", np.count_nonzero(matched_mask))
+        print("len of incremental mask: ", np.count_nonzero(incremental_mask))
+        
+
         incremental_query_pts, incremental_train_pts = query_pts[incremental_mask], train_pts[incremental_mask]
         
         _, train_rvec, train_tvec, _ = cv.solvePnPRansac(matched_points3D, matched_train_pts, self.K, None, confidence=0.999)
         query_rvec, query_tvec = recover_camera_pose(self.camera_poses[query_idx])
+        
         if LOG_VERBOSE:
             matched_query_pts = query_pts[matched_mask]
             _, val_query_rvec, val_query_tvec, _ = cv.solvePnPRansac(matched_points3D, matched_query_pts, self.K, None, confidence=0.999)
@@ -97,9 +99,8 @@ class SFMEngine:
         
         unique_mask = update_unique_points3D_dict(self.unqiue_points3D_dict, train_idx, new_Points3D, incremental_train_pts)
 
-        if LOG_VERBOSE:
-            print("Number of unique incremental points3D: ", new_Points3D[unique_mask].shape[0])
-            print("Number of unique incremental points: ", incremental_train_pts[unique_mask].shape[0])
+        print("Number of new points3D: ", new_Points3D.shape[0])
+        print("Number of unique new points3D: ", new_Points3D[unique_mask].shape[0])
     
     def _incremental_reconstructions(self):
         while True:
@@ -116,7 +117,7 @@ class SFMEngine:
         self.camera_poses = optimized_poses
         self.unqiue_points3D_dict = optimized_points3D_dict
         
-    def filter_points_iqr(self, points3D, k=2.0):
+    def filter_points_iqr(self, points3D, k=3.0):
         centroid = np.mean(points3D, axis=0)
         distances = np.linalg.norm(points3D - centroid, axis=1)
         
@@ -126,14 +127,13 @@ class SFMEngine:
 
         threshold = Q3 + k * IQR
         
-
         mask = distances < threshold
         filtered_points = points3D[mask]
         
-        print(f"原始点数: {len(points3D)}")
-        print(f"过滤后点数: {len(filtered_points)}")
-        print(f"距离阈值: {threshold:.2f}")
-        print(f"移除点数: {len(points3D) - len(filtered_points)}")
+        print(f"original number of points3D: {len(points3D)}")
+        print(f"filterd number of points3D: {len(filtered_points)}")
+        print(f"distance threshold: {threshold:.2f}")
+        print(f"removed number of points3D: {len(points3D) - len(filtered_points)}")
         
         return filtered_points
     

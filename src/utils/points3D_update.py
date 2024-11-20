@@ -49,15 +49,23 @@ def init_unqiue_points3D_dict(unique_points3D_dict, points3D, pts, train_idx, to
     for unique_pt, unique_point3D in zip(unique_pts, unique_points3D):
         unique_points3D_dict[train_idx][tuple(unique_pt)] = np.array(unique_point3D,dtype=np.float64)
         
-def update_unique_points3D_dict(unqiue_points3D_dict, train_img_idx, new_points3D, new_pts):
+def update_unique_points3D_dict(unqiue_points3D_dict, train_img_idx, new_points3D, new_pts, distance_threshold=1e-2):
     print("update unique points3D dict, train_img_idx: ", train_img_idx)
     all_unique_points3D = get_all_unique_points3D(unqiue_points3D_dict)
 
     unique_mask = np.ones(new_points3D.shape[0], dtype=bool)
-    for i, new_point3D in enumerate(new_points3D):
-        for _, unique_point3D in enumerate(all_unique_points3D):
-            if np.array_equal(new_point3D, unique_point3D):
-                unique_mask[i] = False
+    
+    all_unique_points3D = np.ascontiguousarray(all_unique_points3D)
+    new_points3D = np.ascontiguousarray(new_points3D)
+    tree = cKDTree(all_unique_points3D)
+    distances, _ = tree.query(new_points3D, k=1)
+    unique_mask = distances > distance_threshold
+
+    
+    # for i, new_point3D in enumerate(new_points3D):
+    #     for _, unique_point3D in enumerate(all_unique_points3D):
+    #         if np.array_equal(new_point3D, unique_point3D):
+    #             unique_mask[i] = False
                 
     new_unqiue_points3D = new_points3D[unique_mask]
     new_unqiue_pts = new_pts[unique_mask]

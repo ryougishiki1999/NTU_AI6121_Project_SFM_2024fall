@@ -29,8 +29,7 @@ class CameraCalibrator:
         self.objps[:, :2] = np.mgrid[0:h, 0:w].T.reshape(-1, 2)
 
         self.pattern_img_paths = glob.glob(os.path.join(DATA_CALIBRATION_DIR_PATH, 'chessboard*.jpg'))
-        if LOG_VERBOSE:
-            print(f"{__file__}: number of loaded pattern images: {len(self.pattern_img_paths)}")
+        print(f"{__file__}: number of loaded calibration pattern images: {len(self.pattern_img_paths)}")
         self.n_pattern_imgs = len(self.pattern_img_paths)
         if self.n_pattern_imgs == 0:
             raise Exception("No pattern images found in the calibration directory.")
