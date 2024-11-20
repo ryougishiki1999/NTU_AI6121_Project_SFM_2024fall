@@ -148,7 +148,7 @@ class SFMEngine:
         self.camera_poses.update(camera_poses)
         self.good_matches_dict.update(good_matches_dict)
         self.unqiue_points3D_dict.update(unqiue_points3D_dict)
-        
+    
         print("After initial reconstruction, number of 3D points: ", get_all_unique_points3D(self.unqiue_points3D_dict).shape[0])
         print("After initial reconstruction, number of camera poses: ", len(self.camera_poses))
         if LOG_VERBOSE:
