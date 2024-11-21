@@ -77,17 +77,34 @@ def update_unique_points3D_dict(unqiue_points3D_dict, train_img_idx, new_points3
     return unique_mask
 
 def match_3d_by_2d(unique_points3D_dict, good_matches_dict, src_idx, src_pts):
+    """
+    Find all corresponding 3D points for the 2D points in src_pts.
+
+    Args:
+        unique_points3D_dict : {key: image index, value: dict{key: 2D point, value: 3D point}}
+        good_matches_dict (_type_): {key: image index, value: dict{key: trainImg pt, value: queryImg pt}}
+        src_idx (_type_): source image index
+        src_pts (_type_): source 2D points
+    """
                 
     def index_start_pt_on_target_idx(src_pt, target_idx):
-        """_summary_
-
+        """
+            find whether the src_pt can be indexed on target_idx, if so, return the indexed point.
+            if not, return None.
         Args:
-            pt (_type_): _description_
-            target_idx (_type_): target_idx from start_idx to 1.
+            src_pt : source 2D point
+            target_idx : target image index
         """
         
         def recursive_indexing(pt, idx):
-            
+            """
+            find whether the point is in the good_matches_dict[idx], if so, return the indexed point.
+            if not, return None.
+
+            Args:
+                pt: 2D point
+                idx: image index
+            """
             if idx == target_idx:
                 indexed_pt = pt
                 return indexed_pt
@@ -103,6 +120,12 @@ def match_3d_by_2d(unique_points3D_dict, good_matches_dict, src_idx, src_pts):
         return recursive_indexing(src_pt, src_idx)
     
     def match_on_target_idx(target_idx):
+        """
+        find whether the src_pts have corresponding 3D points in the unique_points3D_dict[target_idx]
+
+        Args:
+            target_idx : target image index
+        """
         unique_point3D_dict = unique_points3D_dict[target_idx]
         for i, start_pt in enumerate(src_pts):
             if matched_mask[i]:
@@ -118,6 +141,7 @@ def match_3d_by_2d(unique_points3D_dict, good_matches_dict, src_idx, src_pts):
     incremental_mask = np.ones(src_pts.shape[0], dtype=bool)
     total_points3D = np.zeros((src_pts.shape[0], 3), dtype=np.float64)
     
+    # Correspondent Search from image src_idx to 1, 1 is the first image.
     cur_idx, end_idx = src_idx, 1
     while cur_idx >= end_idx:
         match_on_target_idx(cur_idx)
